@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Notes Calendar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" id="manifest">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        textarea {
+            width: 100%;
+        }
+
+        .NIC {
+          width: 100%;
+          height: 100%;
+          padding: 12px 0 0 0;
+          background: white;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6c6c6c 0%, #93aedb 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 15px;
+            /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); */
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .days-container {
+            border: 2px solid;
+
+            width: 95%;
+            overflow-y: auto;
+        }
+        
+        .day-row {
+            display: flex;
+            border-bottom: 1px solid black;
+            overflow: hidden;
+            /* box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); */
+            height: 45px;
+            align-items: center;
+        }
+        
+        .date-section {
+            width: 130px;
+            background: #f8fafc;
+            padding: 0 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-right: 2px solid #e2e8f0;
+            height: 100%;
+        }
+        
+        .date-text {
+            font-size: 0.8rem;
+            color: #4a5568;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        
+        .today .date-section {
+            background: #ebf8ff;
+            border-right: 2px solid #90cdf4;
+        }
+        
+        .today .date-text {
+            color: #3182ce;
+            font-weight: 600;
+        }
+        
+        .note-input {
+            flex-grow: 1;
+            padding: 0 12px;
+            border: none;
+            font-size: 0.9rem;
+            resize: none;
+            height: 100%;
+            background: white;
+            outline: none;
+        }
+        
+        /* @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                border-radius: 10px;
+            }
+            
+            .day-row {
+                flex-direction: column;
+                margin-bottom: 15px;
+                height: auto;
+            }
+            
+            .date-section {
+                width: 100%;
+                padding: 8px 12px;
+                border-right: none;
+                border-bottom: 2px solid #e2e8f0;
+            }
+            
+            .today .date-section {
+                border-right: none;
+                border-bottom: 2px solid #90cdf4;
+            }
+            
+            .note-input {
+                padding: 8px 12px;
+                min-height: 60px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .app-title {
+                font-size: 1.3rem;
+            }
+            
+            .date-section {
+                padding: 6px 10px;
+            }
+            
+            .date-text {
+                font-size: 0.85rem;
+            }
+            
+            .note-input {
+                padding: 6px 10px;
+                font-size: 0.85rem;
+            }
+        } */
+    </style>
+</head>
+<body>
+        
+    <div class="days-container" id="daysContainer">
+        <!-- Day rows will be generated here -->
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const daysContainer = document.getElementById('daysContainer');
+            const menuBtn = document.getElementById('menuBtn');
+            const menuContent = document.getElementById('menuContent');
+            const addDaysBtn = document.getElementById('addDaysBtn');
+            const todayBtn = document.getElementById('todayBtn');
+            const clearAllBtn = document.getElementById('clearAllBtn');
+            
+            const DAYS_TO_SHOW = 150;
+            let daysAdded = 0;
+            
+            // Initialize the app
+            loadDays();
+            
+            function loadDays() {
+                // Clear container
+                daysContainer.innerHTML = '';
+                
+                // Get today's date
+                const today = new Date();
+                
+                // Add days starting from today
+                for (let i = 0; i < DAYS_TO_SHOW; i++) {
+                    const date = new Date();
+                    date.setDate(today.getDate() + i);
+                    addDayRow(date, i === 0);
+                }
+                
+                daysAdded = DAYS_TO_SHOW;
+            }
+            
+            function addMoreDays() {
+                // Add 30 more days
+                for (let i = daysAdded; i < daysAdded + 30; i++) {
+                    const date = new Date();
+                    date.setDate(date.getDate() + i);
+                    addDayRow(date, false);
+                }
+                
+                daysAdded += 30;
+                menuContent.classList.remove('show');
+            }
+            
+            function addDayRow(date, isToday) {
+                const dateString = date.toDateString();
+                
+                const dayRow = document.createElement('div');
+                dayRow.className = 'day-row';
+                if (isToday) {
+                    dayRow.classList.add('today');
+                }
+                
+                // Format date for display
+                const dayName = date.toLocaleString('default', { weekday: 'short' });
+                const month = date.toLocaleString('default', { month: 'short' });
+                const day = date.getDate();
+                
+                const dateSection = document.createElement('div');
+                dateSection.className = 'date-section';
+                
+                const dateText = document.createElement('div');
+                dateText.className = 'date-text';
+                dateText.innerHTML = `<span>${dayName}</span><span>${month} ${day}</span>`;
+                
+                dateSection.appendChild(dateText);
+                
+                const noteInput = document.createElement('textarea');
+                noteInput.className = 'note-input';
+                
+                // Load saved note if exists
+                const savedNote = getNote(dateString);
+                if (savedNote) {
+                    noteInput.value = savedNote;
+                }
+                
+                // Add input event listener
+                noteInput.addEventListener('input', function() {
+                    saveNote(dateString, this.value);
+                });
+
+                const noteInputContainer = document.createElement('div');
+                noteInputContainer.classList.add('NIC');
+                
+                dayRow.appendChild(dateSection);
+                noteInputContainer.appendChild(noteInput);
+                dayRow.appendChild(noteInputContainer);
+                
+                daysContainer.appendChild(dayRow);
+            }
+            
+            function scrollToToday() {
+                const todayRow = document.querySelector('.today');
+                if (todayRow) {
+                    todayRow.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                menuContent.classList.remove('show');
+            }
+            
+            function saveNote(date, text) {
+                const notes = getNotes();
+                notes[date] = text;
+                localStorage.setItem('dailyNotes', JSON.stringify(notes));
+            }
+            
+            function getNote(date) {
+                const notes = getNotes();
+                return notes[date] || '';
+            }
+            
+            function getNotes() {
+                const notesJSON = localStorage.getItem('dailyNotes');
+                return notesJSON ? JSON.parse(notesJSON) : {};
+            }
+            
+            function clearAllNotes() {
+                if (confirm('Are you sure you want to clear all notes? This cannot be undone.')) {
+                    localStorage.removeItem('dailyNotes');
+                    
+                    // Clear all textareas
+                    const textareas = document.querySelectorAll('.note-input');
+                    textareas.forEach(textarea => {
+                        textarea.value = '';
+                    });
+                }
+                menuContent.classList.remove('show');
+            }
+            
+            function setupPWA() {
+                // Create manifest for PWA
+                const manifest = {
+                    "name": "Daily Notes",
+                    "short_name": "Daily Notes",
+                    "description": "A simple app for daily notes",
+                    "start_url": "/",
+                    "display": "standalone",
+                    "background_color": "#6a11cb",
+                    "theme_color": "#6a11cb",
+                    "icons": [
+                        {
+                            "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iNDAiIGZpbGw9IiM0Nzc2RTYiLz4KPHBhdGggZD0iTTc2IDU2VjEzNkgxMTZWNTZINzZaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTM2IDk2SDE0NEgxNTJWMTM2SDEzNlY5NloiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik00OCA5NkM0OCA4Mi43NDYgNTguNzQ2IDcyIDcyIDcySDEyMEMxMzMuMjU0IDcyIDE0NCA4Mi43NDYgMTQ0IDk2VjEzNkMxNDQgMTQ5LjI1NCAxMzMuMjU0IDE2MCAxMjAgMTYwSDcyQzU4Ljc0NiAxNjAgNDggMTQ5LjI1NCA0OCAxMzZWOTZaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K",
+                            "sizes": "192x192",
+                            "type": "image/svg+xml"
+                        }
+                    ]
+                };
+                
+                // Convert manifest to string and set it as href for the manifest link
+                const manifestJSON = JSON.stringify(manifest);
+                const blob = new Blob([manifestJSON], {type: 'application/json'});
+                const manifestURL = URL.createObjectURL(blob);
+                document.getElementById('manifest').href = manifestURL;
+            }
+        });
+    </script>
+</body>
+</html>

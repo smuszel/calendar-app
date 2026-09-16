@@ -14,6 +14,17 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        textarea {
+            width: 100%;
+        }
+
+        .NIC {
+          width: 100%;
+          height: 100%;
+          padding: 12px 0 0 0;
+          background: white;
+        }
+        
         body {
             background: linear-gradient(135deg, #6c6c6c 0%, #93aedb 100%);
             color: #333;
@@ -23,99 +34,46 @@
             flex-direction: column;
             align-items: center;
         }
-
-        .header-controls {
-            width: 95%;
-            max-width: 1000px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            position: relative;
-        }
-
-        .app-title {
-            color: white;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .menu-btn {
-            background: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            color: #4a5568;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .menu-content {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 45px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            z-index: 100;
-            overflow: hidden;
-            flex-direction: column;
-        }
-
-        .menu-content.show {
-            display: flex;
-        }
-
-        .menu-content button {
-            padding: 12px 20px;
-            border: none;
-            background: none;
-            text-align: left;
-            cursor: pointer;
-            font-size: 0.9rem;
-            color: #333;
+        
+        .container {
             width: 100%;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .menu-content button:hover {
-            background: #f1f5f9;
-        }
-
-        .days-container {
-            border: 2px solid #cbd5e1;
-            border-radius: 12px;
-            width: 95%;
             max-width: 1000px;
-            height: 80vh;
-            overflow-y: auto;
             background: white;
+            border-radius: 15px;
+            /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); */
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .days-container {
+            border: 2px solid;
+
+            width: 95%;
+            overflow-y: auto;
         }
         
         .day-row {
             display: flex;
-            border-bottom: 1px solid #e2e8f0;
-            min-height: 50px;
-            align-items: stretch;
+            border-bottom: 1px solid black;
+            overflow: hidden;
+            /* box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); */
+            height: 45px;
+            align-items: center;
         }
         
         .date-section {
             width: 130px;
-            min-width: 130px;
             background: #f8fafc;
-            padding: 0 12px;
+            padding: 0 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-right: 2px solid #e2e8f0;
+            height: 100%;
         }
         
         .date-text {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #4a5568;
             display: flex;
             justify-content: space-between;
@@ -131,55 +89,38 @@
             color: #3182ce;
             font-weight: 600;
         }
-
-        .NIC {
-            flex-grow: 1;
-            background: white;
-            display: flex;
-            align-items: center;
-        }
         
         .note-input {
-            width: 100%;
-            height: 100%;
-            padding: 10px 12px;
+            flex-grow: 1;
+            padding: 0 12px;
             border: none;
             font-size: 0.9rem;
-            resize: vertical;
-            min-height: 48px;
-            background: transparent;
+            resize: none;
+            height: 100%;
+            background: white;
             outline: none;
         }
 
-        @media (max-width: 600px) {
-            .day-row {
-                flex-direction: column;
-            }
-
-            .date-section {
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid #e2e8f0;
-                padding: 6px 12px;
-            }
+        /* Hidden helper class for menu toggling without changing CSS rules */
+        .show {
+            display: block !important;
         }
     </style>
 </head>
 <body>
-    <div class="header-controls">
-        <h1 class="app-title">Daily Notes</h1>
-        <div>
-            <button class="menu-btn" id="menuBtn">
-                <i class="fa-solid fa-bars"></i> Menu
-            </button>
-            <div class="menu-content" id="menuContent">
-                <button id="todayBtn"><i class="fa-solid fa-calendar-day"></i> Go to Today</button>
-                <button id="addDaysBtn"><i class="fa-solid fa-plus"></i> Add 30 Days</button>
-                <button id="clearAllBtn"><i class="fa-solid fa-trash"></i> Clear All Notes</button>
-            </div>
+    
+    <!-- Restored missing menu UI controls -->
+    <div style="width: 95%; margin-bottom: 10px; display: flex; justify-content: flex-end; position: relative;">
+        <button id="menuBtn" style="padding: 8px 12px; cursor: pointer; background: white; border: 1px solid #ccc; border-radius: 5px;">
+            <i class="fa-solid fa-bars"></i> Menu
+        </button>
+        <div id="menuContent" style="display: none; position: absolute; top: 40px; right: 0; background: white; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 100; flex-direction: column;">
+            <button id="todayBtn" style="display: block; width: 100%; padding: 10px 15px; border: none; background: transparent; text-align: left; cursor: pointer;">Go to Today</button>
+            <button id="addDaysBtn" style="display: block; width: 100%; padding: 10px 15px; border: none; background: transparent; text-align: left; cursor: pointer;">Add 30 Days</button>
+            <button id="clearAllBtn" style="display: block; width: 100%; padding: 10px 15px; border: none; background: transparent; text-align: left; cursor: pointer; color: red;">Clear All Notes</button>
         </div>
     </div>
-        
+
     <div class="days-container" id="daysContainer">
         <!-- Day rows will be generated here -->
     </div>
@@ -196,24 +137,29 @@
             const DAYS_TO_SHOW = 150;
             let daysAdded = 0;
             
-            // Toggle dropdown menu
-            menuBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                menuContent.classList.toggle('show');
-            });
+            // Setup menu event handlers safely
+            if (menuBtn && menuContent) {
+                menuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    menuContent.classList.toggle('show');
+                });
 
-            document.addEventListener('click', () => {
-                menuContent.classList.remove('show');
-            });
+                document.addEventListener('click', function(e) {
+                    if (!menuContent.contains(e.target) && e.target !== menuBtn) {
+                        menuContent.classList.remove('show');
+                    }
+                });
+            }
 
-            addDaysBtn.addEventListener('click', addMoreDays);
-            todayBtn.addEventListener('click', scrollToToday);
-            clearAllBtn.addEventListener('click', clearAllNotes);
+            if (addDaysBtn) addDaysBtn.addEventListener('click', addMoreDays);
+            if (todayBtn) todayBtn.addEventListener('click', scrollToToday);
+            if (clearAllBtn) clearAllBtn.addEventListener('click', clearAllNotes);
 
-            // Initialize app and PWA
-            setupPWA();
+            // Initialize the app & PWA setup
             loadDays();
-            
+            setupPWA();
+            registerServiceWorker();
+
             function loadDays() {
                 daysContainer.innerHTML = '';
                 const today = new Date();
@@ -236,7 +182,7 @@
                 }
                 
                 daysAdded += 30;
-                menuContent.classList.remove('show');
+                if (menuContent) menuContent.classList.remove('show');
             }
             
             function addDayRow(date, isToday) {
@@ -276,6 +222,11 @@
                 const noteInputContainer = document.createElement('div');
                 noteInputContainer.classList.add('NIC');
                 
+                // Adjusted internal inline padding behavior so the textarea is not pushed out of view
+                noteInputContainer.style.padding = '0';
+                noteInputContainer.style.display = 'flex';
+                noteInputContainer.style.alignItems = 'center';
+
                 dayRow.appendChild(dateSection);
                 noteInputContainer.appendChild(noteInput);
                 dayRow.appendChild(noteInputContainer);
@@ -288,7 +239,7 @@
                 if (todayRow) {
                     todayRow.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
-                menuContent.classList.remove('show');
+                if (menuContent) menuContent.classList.remove('show');
             }
             
             function saveNote(date, text) {
@@ -315,7 +266,7 @@
                         textarea.value = '';
                     });
                 }
-                menuContent.classList.remove('show');
+                if (menuContent) menuContent.classList.remove('show');
             }
             
             function setupPWA() {
@@ -325,8 +276,8 @@
                     "description": "A simple app for daily notes",
                     "start_url": "./",
                     "display": "standalone",
-                    "background_color": "#6c6c6c",
-                    "theme_color": "#6c6c6c",
+                    "background_color": "#6a11cb",
+                    "theme_color": "#6a11cb",
                     "icons": [
                         {
                             "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iNDAiIGZpbGw9IiM0Nzc2RTYiLz4KPHBhdGggZD0iTTc2IDU2VjEzNkgxMTZWNTZINzZaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTM2IDk2SDE0NEgxNTJWMTM2SDEzNlY5NloiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik00OCA5NkM0OCA4Mi43NDYgNTguNzQ2IDcyIDcyIDcySDEyMEMxMzMuMjU0IDcyIDE0NCA4Mi43NDYgMTQ0IDk2VjEzNkMxNDQgMTQ5LjI1NCAxMzMuMjU0IDE2MCAxMjAgMTYwSDcyQzU4Ljc0NiAxNjAgNDggMTQ5LjI1NCA0OCAxMzZWOTZaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K",
@@ -339,14 +290,17 @@
                 const manifestJSON = JSON.stringify(manifest);
                 const blob = new Blob([manifestJSON], {type: 'application/json'});
                 const manifestURL = URL.createObjectURL(blob);
-                document.getElementById('manifest').href = manifestURL;
+                const manifestElem = document.getElementById('manifest');
+                if (manifestElem) {
+                    manifestElem.href = manifestURL;
+                }
             }
 
-            // Register Service Worker for offline capability
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(() => console.log('Service Worker Registered Successfully'))
-                    .catch((err) => console.error('Service Worker Registration Failed:', err));
+            function registerServiceWorker() {
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register('./sw.js')
+                        .catch(err => console.log('Service Worker registration skipped or failed:', err));
+                }
             }
         });
     </script>

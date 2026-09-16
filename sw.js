@@ -1,4 +1,4 @@
-const CACHE_NAME = 'daily-notes-v3';
+const CACHE_NAME = 'daily-notes-v4';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
